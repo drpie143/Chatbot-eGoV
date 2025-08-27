@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+:root {
+    --fromX: 0px;
+    --fromY: 0px;
+}
+
+/* === HIỆU ỨNG NỀN MỚI (NHẸ NHÀNG HƠN) === */
+@keyframes aurora-effect {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.animate-aurora {
+    /* Sử dụng các màu pastel và nhẹ nhàng hơn */
+    background: linear-gradient(-45deg, #ffdde1, #ffecd2, #fecfef, #ffc3a0);
+    background-size: 400% 400%;
+    animation: aurora-effect 20s ease infinite;
+}
+
+/* Hiệu ứng Spotlight vẫn giữ nguyên để tập trung vào giữa */
+.spotlight-effect::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 90%);
+    pointer-events: none;
+}
+
+/* Hiệu ứng nút "Bắt đầu Trò chuyện" */
+.animated-gradient-button {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, #ff6f00, #ffc107, #ff6f00);
+    background-size: 200% 100%;
+    animation: button-gradient 4s linear infinite;
+}
+@keyframes button-gradient {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.animated-gradient-button::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.4) 50%, transparent 75%);
+    transition: left 0.8s ease;
+}
+.animated-gradient-button:hover::before {
+    left: 100%;
+}
+
+/* Hiệu ứng popup kiểu macOS */
+.modal {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.modal.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+.modal-content {
+    position: fixed; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+.modal.open .modal-content {
+    display: flex;
+    animation: appOpen 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.modal.closing .modal-content {
+    display: flex;
+    animation: appClose 0.4s cubic-bezier(0.55, 0.055, 0.675, 0.19) both;
+}
+
+@keyframes appOpen {
+    0% { transform: translate(calc(-50% + var(--fromX)), calc(-50% + var(--fromY))) scale(.3); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+@keyframes appClose {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--fromX)), calc(-50% + var(--fromY))) scale(.3); opacity: 0; }
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 3px; }
+
+/* === ĐỊNH DẠNG CHO NỘI DUNG CHATBOT (MARKDOWN) === */
+.prose {
+    /* Đảm bảo màu chữ mặc định là màu trắng */
+    color: #E5E7EB; /* Tương đương text-gray-200 */
+}
+
+/* Định dạng các thẻ tiêu đề (nếu có) */
+.prose h1, .prose h2, .prose h3, .prose h4 {
+    color: white;
+}
+
+/* Định dạng chữ in đậm */
+.prose strong {
+    color: white;
+    font-weight: 600;
+}
+
+/* Định dạng danh sách */
+.prose ul {
+    list-style-type: disc;
+    padding-left: 1.5rem; /* Căn lề cho các dấu chấm đầu dòng */
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.prose ul li {
+    margin-top: 0.25rem;
+}
+
+/* Định dạng các đường link */
+.prose a {
+    color: #FBBF24; /* Màu vàng giống trong project của bạn */
+    text-decoration: underline;
+}
+
+.prose a:hover {
+    color: #F59E0B;
+}
+
+/* Xóa bỏ định dạng mặc định cho thẻ p để không bị thừa khoảng cách */
+.prose p {
+    margin: 0;
+}
+
+/* === HIỆU ỨNG HIỂN THỊ TIN NHẮN MỚI === */
+/* Định nghĩa các bước của hiệu ứng */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px); /* Bắt đầu từ vị trí thấp hơn 15px */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); /* Kết thúc ở vị trí ban đầu */
+  }
+}
+
+/* Class để áp dụng hiệu ứng */
+.message-enter-active {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
