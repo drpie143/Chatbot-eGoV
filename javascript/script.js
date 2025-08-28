@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
     chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
 
     try {
-      const API_ENDPOINT = "https://DrPie-eGoV_chatbot.hf.space/chat";
+      const API_ENDPOINT = "https://drpie-egov-chatbot.hf.space/chat";
       const response = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
