@@ -223,40 +223,47 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- LOGIC CHAT (GIẢ LẬP) ---
-  let messages = [
-    { role: "assistant", content: "Chào bạn, tôi là trợ lý ảo eGov-Bot." },
-  ];
-
-  const renderMessages = () => {
-    chatMessagesContainer.innerHTML = "";
-    messages.forEach((msg) => {
-      const msgDiv = document.createElement("div");
-      msgDiv.className = `flex items-end gap-2 max-w-[80%] ${
-        msg.role === "user" ? "self-end flex-row-reverse" : "self-start"
-      }`;
-
-      const messageContent =
-        msg.role === "assistant" ? marked.parse(msg.content) : msg.content;
-
-      msgDiv.innerHTML = `<div class="prose px-4 py-2 rounded-2xl ${
-        msg.role === "user"
-          ? "bg-[#ff6f00] text-white rounded-br-none"
-          : "bg-[#4d4d4d] text-white/90 rounded-bl-none"
-      }">${messageContent}</div>`;
-
-      chatMessagesContainer.appendChild(msgDiv);
-
-      const links = msgDiv.querySelectorAll("a");
-      // Lặp qua từng thẻ và thêm thuộc tính
-      links.forEach((link) => {
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
+  let messages = [{ role: "assistant", content: "Chào bạn, tôi là trợ lý ảo eGov-Bot." }];
+  let currentSessionId = "user123";  // session mặc định ban đầu
+  
+  // Thêm nút New Chat
+  const newChatBtn = document.createElement("button");
+  newChatBtn.textContent = "🆕 New Chat";
+  newChatBtn.className = "px-3 py-1 rounded-lg bg-blue-600 text-white text-sm mt-2 hover:bg-blue-700";
+  
+  newChatBtn.onclick = async () => {
+    try {
+      const response = await fetch("https://drpie-egov-chatbot.hf.space/newchat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: currentSessionId })
       });
-      // =========================================================
-    });
-    chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+      const result = await response.json();
+  
+      // chỉ đổi sessionId, giữ nguyên lịch sử hiển thị
+      currentSessionId = result.session_id;
+  
+      // thêm 1 tin nhắn hệ thống vào khung chat cho rõ ràng
+      messages.push({ role: "assistant", content: "🔄 Đã bắt đầu phiên chat mới. Hãy đặt câu hỏi mới nhé!" });
+      renderMessages();
+  
+    } catch (err) {
+      console.error("Không thể tạo new chat:", err);
+    }
   };
-  renderMessages();
+  
+  chatMessagesContainer.parentElement.appendChild(newChatBtn);
+  
+  // Khi gửi chat thì nhớ gửi đúng session hiện tại
+  const response = await fetch("https://drpie-egov-chatbot.hf.space/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      question: userText,
+      session_id: currentSessionId   // dùng session mới
+    }),
+  });
+
 
   // --- LOGIC CHAT ĐÃ NÂNG CẤP ĐỂ GỌI API ---
   chatForm.addEventListener("submit", async (e) => {
